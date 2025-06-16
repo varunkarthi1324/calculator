@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Calculator Project</title>
+    <!-- Bootstrap CDN -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- CSS Part -->
+
+    <style>
+      :root {
+        --calc-bg: #f8f9fa;
+        --display-bg: #fff;
+        --display-color: #212529;
+        --btn-operator-bg: #0d6efd;
+        --btn-operator-color: #fff;
+        --btn-ac-bg: #dc3545;
+        --btn-ac-color: #fff;
+        --btn-eq-bg: #198754;
+        --btn-eq-color: #fff;
+        --btn-calc-bg: #e9ecef;
+        --btn-calc-color: #212529;
+      }
+      body.dark-mode {
+        --calc-bg: #23272f;
+        --display-bg: #181c22;
+        --display-color: #f8f9fa;
+        --btn-operator-bg: #375a7f;
+        --btn-operator-color: #fff;
+        --btn-ac-bg: #c82333;
+        --btn-ac-color: #fff;
+        --btn-eq-bg: #218838;
+        --btn-eq-color: #fff;
+        --btn-calc-bg: #343a40;
+        --btn-calc-color: #f8f9fa;
+      }
+      .calculator {
+        max-width: 350px;
+        margin: 40px auto;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px #aaa;
+        background: var(--calc-bg);
+        transition: background 0.3s;
+      }
+      .display {
+        height: 80px;
+        font-size: 2.5rem;
+        text-align: right;
+        padding: 18px 10px 10px 10px;
+        margin-bottom: 15px;
+        background: var(--display-bg);
+        color: var(--display-color);
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        overflow-x: auto;
+        transition: background 0.3s, color 0.3s;
+      }
+      .btn-calc {
+        min-width: 60px;
+        min-height: 60px;
+        font-size: 1.3rem;
+        margin: 0;
+        background: var(--btn-calc-bg);
+        color: var(--btn-calc-color);
+        border: none;
+        transition: background 0.3s, color 0.3s;
+      }
+      .btn-calc:active {
+        filter: brightness(0.95);
+      }
+      .btn-operator {
+        background: var(--btn-operator-bg) !important;
+        color: var(--btn-operator-color) !important;
+      }
+      .btn-ac {
+        background: var(--btn-ac-bg) !important;
+        color: var(--btn-ac-color) !important;
+      }
+      .btn-eq {
+        background: var(--btn-eq-bg) !important;
+        color: var(--btn-eq-color) !important;
+      }
+      .p-1 {
+        padding: 4px !important;
+      }
+      .mode-toggle {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      class="btn btn-secondary mode-toggle"
+      id="modeToggle"
+      onclick="toggleMode()"
+    >
+      🌙
+    </button>
+    <div class="calculator shadow position-relative">
+      <div id="display" class="display">0</div>
+      <!-- Row 1 -->
+      <div class="row justify-content-center">
+        <div class="col-3 p-1">
+          <button class="btn btn-calc btn-ac w-100" onclick="allClear()">
+            AC
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button
+            class="btn btn-calc btn-operator w-100"
+            onclick="appendOperator('%')"
+          >
+            %
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button class="btn btn-calc btn-operator w-100" onclick="square()">
+            x²
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button
+            class="btn btn-calc btn-operator w-100"
+            onclick="appendOperator('/')"
+          >
+            ÷
+          </button>
+        </div>
+      </div>
+      <!-- Row 2 -->
+      <div class="row justify-content-center">
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('7')">
+            7
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('8')">
+            8
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('9')">
+            9
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button
+            class="btn btn-calc btn-operator w-100"
+            onclick="appendOperator('*')"
+          >
+            ×
+          </button>
+        </div>
+      </div>
+      <!-- Row 3 -->
+      <div class="row justify-content-center">
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('4')">
+            4
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('5')">
+            5
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('6')">
+            6
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button
+            class="btn btn-calc btn-operator w-100"
+            onclick="appendOperator('-')"
+          >
+            −
+          </button>
+        </div>
+      </div>
+      <!-- Row 4 -->
+      <div class="row justify-content-center">
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('1')">
+            1
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('2')">
+            2
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('3')">
+            3
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button
+            class="btn btn-calc btn-operator w-100"
+            onclick="appendOperator('+')"
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <!-- Row 5 -->
+      <div class="row justify-content-center">
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendNumber('0')">
+            0
+          </button>
+        </div>
+        <div class="col-3 p-1">
+          <button class="btn btn-calc w-100" onclick="appendDot()">.</button>
+        </div>
+        <div class="col-6 p-1">
+          <button class="btn btn-calc btn-eq w-100" onclick="calculate()">
+            =
+          </button>
+        </div>
+      </div>
+    </div>
+    <p>Source code: <a href="src.txt">click here</a></p>
+
+    <!-- JavaScript code -->
+    <script>
+      // Calculator state
+      let currentInput = "0"; // Current input string
+      let lastOperator = null; // Last operator pressed
+      let resetNext = false; // Should reset input on next number
+
+      // Update the calculator display
+      function updateDisplay() {
+        document.getElementById("display").innerText = currentInput;
+      }
+
+      // Append a number to the input
+      function appendNumber(num) {
+        if (currentInput === "0" || resetNext) {
+          currentInput = num;
+          resetNext = false;
+        } else {
+          currentInput += num;
+        }
+        updateDisplay();
+      }
+
+      // Append a decimal point
+      function appendDot() {
+        // Prevent multiple decimals in the same number
+        let parts = currentInput.split(/[\+\-\*\/%]/);
+        let last = parts[parts.length - 1];
+        if (!last.includes(".")) {
+          currentInput += ".";
+          updateDisplay();
+        }
+      }
+
+      // Append an operator (+, -, *, /, %)
+      function appendOperator(op) {
+        // Prevent two operators in a row
+        if (/[+\-*/%]$/.test(currentInput)) {
+          currentInput = currentInput.slice(0, -1) + op;
+        } else {
+          currentInput += op;
+        }
+        resetNext = false;
+        updateDisplay();
+      }
+
+      // Calculate the square of the current number
+      function square() {
+        // Find the last number in the input
+        let parts = currentInput.split(/([\+\-\*\/%])/);
+        let last = parts.pop();
+        if (last === "") last = parts.pop(); // If last is empty, get previous
+        let squared = Math.pow(parseFloat(last), 2);
+        if (isNaN(squared)) return;
+        parts.push(squared);
+        currentInput = parts.join("");
+        resetNext = true;
+        updateDisplay();
+      }
+
+      // All Clear (AC) button
+      function allClear() {
+        currentInput = "0";
+        lastOperator = null;
+        resetNext = false;
+        updateDisplay();
+      }
+
+      // Calculate the result
+      function calculate() {
+        try {
+          // Replace '÷' and '×' with JS operators
+          let expression = currentInput.replace(/÷/g, "/").replace(/×/g, "*");
+          // Evaluate the expression safely
+          let result = eval(expression);
+          // Handle division by zero and invalid results
+          if (result === Infinity || isNaN(result)) {
+            currentInput = "Error";
+          } else {
+            currentInput = result.toString();
+          }
+          resetNext = true;
+        } catch (e) {
+          currentInput = "Error";
+          resetNext = true;
+        }
+        updateDisplay();
+      }
+
+      // Keyboard support for calculator
+      document.addEventListener("keydown", function (event) {
+        if (
+          document.activeElement.tagName === "BUTTON" ||
+          document.activeElement.tagName === "INPUT" ||
+          document.activeElement.isContentEditable
+        ) {
+          return;
+        }
+        const key = event.key;
+        if (key >= "0" && key <= "9") {
+          appendNumber(key);
+          event.preventDefault();
+        } else if (key === ".") {
+          appendDot();
+          event.preventDefault();
+        } else if (["+", "-", "*", "/", "%"].includes(key)) {
+          appendOperator(key);
+          event.preventDefault();
+        } else if (key === "Enter" || key === "=") {
+          calculate();
+          event.preventDefault();
+        } else if (key.toLowerCase() === "c") {
+          allClear();
+          event.preventDefault();
+        } else if (key === "Backspace") {
+          if (currentInput.length > 1) {
+            currentInput = currentInput.slice(0, -1);
+          } else {
+            currentInput = "0";
+          }
+          updateDisplay();
+          event.preventDefault();
+        }
+      });
+
+      // Dark/Light mode toggle
+      function toggleMode() {
+        document.body.classList.toggle("dark-mode");
+        const btn = document.getElementById("modeToggle");
+        if (document.body.classList.contains("dark-mode")) {
+          btn.innerText = "☀️";
+        } else {
+          btn.innerText = "🌙";
+        }
+      }
+    </script>
+  </body>
+</html>
